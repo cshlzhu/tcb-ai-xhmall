@@ -1,0 +1,89 @@
+<view class="container">
+  <view class="form-section">
+    <!-- 收货人信息 -->
+    <view class="section-title">收货信息</view>
+    <van-cell-group>
+      <van-field
+        label="收货人"
+        value="{{form.name}}"
+        placeholder="请输入收货人姓名"
+        bind:input="onNameInput"
+        maxlength="20"
+        required
+      />
+      <van-field
+        label="手机号"
+        value="{{form.phone}}"
+        placeholder="请输入联系电话"
+        type="number"
+        bind:input="onPhoneInput"
+        maxlength="11"
+        required
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 地区选择 -->
+  <view class="form-section">
+    <view class="section-title">所在地区</view>
+    <picker
+      mode="region"
+      value="{{[form.province, form.city, form.district]}}"
+      bindchange="onRegionChange"
+    >
+      <view class="region-picker">
+        <text class="region-label">地区</text>
+        <text class="region-text {{regionText === '请选择所在地区' ? 'placeholder' : ''}}">{{regionText}}</text>
+        <van-icon name="arrow" size="16px" color="#bfbfbf" />
+      </view>
+    </picker>
+  </view>
+
+  <!-- 详细地址 -->
+  <view class="form-section">
+    <view class="section-title">详细地址</view>
+    <van-field
+      value="{{form.detail}}"
+      placeholder="街道、门牌号等"
+      type="textarea"
+      autosize
+      maxlength="200"
+      bind:input="onDetailInput"
+      custom-style="min-height: 120rpx;"
+    />
+  </view>
+
+  <!-- 设为默认地址 -->
+  <view class="form-section">
+    <van-cell center title="设为默认地址">
+      <van-switch
+        checked="{{form.isDefault}}"
+        active-color="#6A5ACD"
+        bind:input="onDefaultChange"
+        slot="right-icon"
+      />
+    </van-cell>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <van-button
+      type="primary"
+      block
+      round
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bind:click="onSave"
+    >{{isEdit ? '保存修改' : '保存地址'}}</van-button>
+
+    <van-button
+      wx:if="{{isEdit}}"
+      type="danger"
+      block
+      round
+      plain
+      bind:click="onDelete"
+      custom-style="margin-top: 20rpx;"
+    >删除地址</van-button>
+  </view>
+</view>

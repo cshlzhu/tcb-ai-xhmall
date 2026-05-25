@@ -1,0 +1,50 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 60rpx;
+}
+
+/* 表单区域 */
+.form-section {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  color: #999;
+  padding: 24rpx 30rpx 12rpx;
+}
+
+/* 地区选择器 */
+.region-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 24rpx 30rpx;
+  border-radius: 8rpx;
+  margin: 0 20rpx;
+}
+
+.region-label {
+  font-size: 28rpx;
+  color: #1A1A2E;
+  min-width: 100rpx;
+}
+
+.region-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1A1A2E;
+  text-align: right;
+  margin-right: 16rpx;
+}
+
+.region-text.placeholder {
+  color: #bfbfbf;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  padding: 40rpx 30rpx 20rpx;
+}

@@ -1,0 +1,66 @@
+<view class="container">
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{addresses.length === 0 && !loading}}">
+    <van-empty description="暂无收货地址" />
+  </view>
+
+  <!-- 地址列表 -->
+  <view class="address-list" wx:if="{{addresses.length > 0}}">
+    <view
+      class="address-card {{item.isDefault ? 'is-default' : ''}}"
+      wx:for="{{addresses}}"
+      wx:key="_id"
+    >
+      <view class="card-main" bindtap="navigateToEdit" data-id="{{item._id}}">
+        <view class="card-header">
+          <view class="user-info">
+            <text class="name">{{item.name}}</text>
+            <text class="phone">{{item.phone}}</text>
+          </view>
+          <view class="default-tag" wx:if="{{item.isDefault}}">
+            <text>默认</text>
+          </view>
+        </view>
+        <view class="card-body">
+          <text class="region">{{item.fullRegion}}</text>
+          <text class="detail">{{item.detail}}</text>
+        </view>
+        <view class="card-footer">
+          <text class="create-time">{{item.createTimeText}}</text>
+        </view>
+      </view>
+
+      <view class="card-actions">
+        <view
+          class="action-btn set-default"
+          wx:if="{{!item.isDefault}}"
+          bindtap="onToggleDefault"
+          data-id="{{item._id}}"
+          data-isdefault="{{false}}"
+        >
+          <van-icon name="star-o" size="16px" />
+          <text>设为默认</text>
+        </view>
+        <view class="action-btn edit" bindtap="navigateToEdit" data-id="{{item._id}}">
+          <van-icon name="edit" size="16px" />
+          <text>编辑</text>
+        </view>
+        <view class="action-btn delete" bindtap="onDeleteAddress" data-id="{{item._id}}">
+          <van-icon name="delete-o" size="16px" />
+          <text>删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部添加按钮 -->
+  <view class="bottom-bar">
+    <van-button
+      type="primary"
+      block
+      round
+      icon="plus"
+      bind:click="navigateToAdd"
+    >新增收货地址</van-button>
+  </view>
+</view>
