@@ -279,11 +279,18 @@ Page({
     });
   },
 
+  onShareAppMessage() {
+    return {
+      title: '我的小程序',
+      path: `/pages/order/detail/index?id=${this.data.orderId}`,
+    };
+  },
+
   /**
    * 下拉刷新
    */
   onPullDownRefresh: function () {
     this.loadOrderDetail();
     wx.stopPullDownRefresh();
-  }
+  },
 })

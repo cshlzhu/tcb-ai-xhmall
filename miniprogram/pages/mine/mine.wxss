@@ -22,6 +22,18 @@
   position: relative;
 }
 
+.avatar-btn {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  line-height: 1;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
 .avatar {
   width: 120rpx;
   height: 120rpx;
@@ -34,16 +46,31 @@
   flex: 1;
 }
 
-.nickname {
+.login-hint {
   font-size: 36rpx;
   font-weight: 500;
   color: #333;
-  margin-bottom: 10rpx;
 }
 
-.user-id {
-  font-size: 24rpx;
+.nickname-display {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.nickname-input {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #333;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.nickname-input::placeholder {
   color: #999;
+  font-weight: 400;
+  font-size: 28rpx;
 }
 
 /* 订单状态卡片样式 */

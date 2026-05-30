@@ -86,6 +86,13 @@ Page({
     }
   },
 
+  onShareAppMessage() {
+    return {
+      title: '我的小程序',
+      path: '/pages/index/index',
+    };
+  },
+
   // 删除地址
   onDeleteAddress(e) {
     const { id } = e.currentTarget.dataset;

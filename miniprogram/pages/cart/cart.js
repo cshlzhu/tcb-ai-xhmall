@@ -256,6 +256,13 @@ Page({
 		});
 	},
 
+	onShareAppMessage() {
+		return {
+			title: '我的小程序',
+			path: '/pages/cart/cart',
+		};
+	},
+
 	/**
 	 * 结算
 	 */

@@ -215,6 +215,13 @@ Page({
 		return `${year}-${month}-${day} ${hour}:${minute}`;
 	},
 
+	onShareAppMessage() {
+		return {
+			title: '我的小程序',
+			path: '/pages/order/list/index',
+		};
+	},
+
 	/**
 	 * 下拉刷新
 	 */

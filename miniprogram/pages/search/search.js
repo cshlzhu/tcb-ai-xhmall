@@ -249,5 +249,12 @@ Page({
    */
   goBack() {
     wx.navigateBack();
-  }
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '我的小程序',
+      path: '/pages/index/index',
+    };
+  },
 });

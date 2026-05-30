@@ -1,22 +1,46 @@
 <view class="container">
   <!-- 用户信息卡片 -->
-  <view class="user-card">
+  <view class="user-card" bindtap="handleLogin">
     <view class="user-info">
       <view class="avatar-container">
+        <button
+          wx:if="{{isLoggingIn || isLoggedIn}}"
+          class="avatar-btn"
+          open-type="chooseAvatar"
+          bindchooseavatar="onChooseAvatar"
+          catchtap="preventBubble"
+        >
+          <image
+            class="avatar"
+            mode="aspectFill"
+            src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
+          ></image>
+        </button>
         <image
+          wx:else
           class="avatar"
           mode="aspectFill"
           src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
         ></image>
       </view>
       <view class="user-detail">
-        <view wx:if="{{!userInfo.nickName}}" class="nickname" bindtap="getUserProfile"
-          >{{'点击登录'}}
-        </view>
-        <view wx:else class="nickname">{{userInfo.nickName}}</view>
-        <view class="user-id" wx:if="{{userInfo.nickName}}"
-          >ID: {{userInfo._id || userInfo.openid}}
-        </view>
+        <!-- 未登录：显示"点击登录" -->
+        <view wx:if="{{!isLoggingIn && !isLoggedIn}}" class="login-hint">点击登录</view>
+        <!-- 登录中：显示昵称输入框 -->
+        <input
+          wx:elif="{{isLoggingIn}}"
+          id="nicknameInput"
+          type="nickname"
+          class="nickname-input"
+          placeholder="点击上方选择微信昵称"
+          focus="{{needNickname}}"
+          bindblur="onNicknameBlur"
+          bindconfirm="onNicknameConfirm"
+          bindfocus="onNicknameFocus"
+          catchtap="preventBubble"
+        />
+        <!-- 已登录：显示昵称 -->
+        <view wx:else class="nickname-display">{{userInfo.nickName}}</view>
       </view>
     </view>
   </view>
@@ -97,5 +121,5 @@
   </view>
 
   <!-- 退出登录按钮 -->
-  <view class="logout-button" bindtap="logout" wx:if="{{userInfo.nickName}}">退出登录</view>
+  <view class="logout-button" bindtap="logout" wx:if="{{isLoggedIn}}">退出登录</view>
 </view>
