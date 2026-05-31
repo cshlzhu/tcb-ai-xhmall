@@ -1,5 +1,8 @@
 /**
  * 地址服务
+ *
+ * 使用 CloudBase 数据库 PRIVATE 权限模式，_openid 由系统自动管理，
+ * 无需通过云函数获取 openid。
  */
 
 // 检查云开发是否就绪
@@ -17,34 +20,15 @@ const getDb = () => {
 };
 
 /**
- * 获取当前用户 openid
- */
-const getOpenId = async () => {
-  if (!isCloudReady()) {
-    throw new Error('云开发未就绪');
-  }
-  const { result } = await wx.cloud.callFunction({
-    name: 'getOpenId',
-  });
-  if (!result || !result.openid) {
-    throw new Error('获取openid失败');
-  }
-  return result.openid;
-};
-
-/**
  * 获取用户所有收货地址
+ * PRIVATE 权限自动按 _openid 过滤
  */
 export const getAddresses = async () => {
   try {
     if (!isCloudReady()) return [];
     const { db } = getDb();
-    const openid = await getOpenId();
     const { data } = await db
       .collection('addresses')
-      .where({
-        _openid: openid,
-      })
       .orderBy('createTime', 'desc')
       .get();
     return data;
@@ -72,20 +56,20 @@ export const getAddressById = async (id) => {
 
 /**
  * 添加地址
+ * PRIVATE 权限下 add() 自动设置 _openid
  * @param {Object} addressData - 地址数据
  */
 export const addAddress = async (addressData) => {
   try {
     if (!isCloudReady()) throw new Error('云开发未就绪');
     const { db } = getDb();
-    const openid = await getOpenId();
 
     // 如果设置为默认地址，先取消其他默认地址
+    // PRIVATE 权限下 where 自动限定当前用户
     if (addressData.isDefault) {
       await db
         .collection('addresses')
         .where({
-          _openid: openid,
           isDefault: true,
         })
         .update({
@@ -98,7 +82,6 @@ export const addAddress = async (addressData) => {
     const result = await db.collection('addresses').add({
       data: {
         ...addressData,
-        openid,
         createTime: new Date(),
         updateTime: new Date(),
       },
@@ -119,14 +102,13 @@ export const updateAddress = async (id, addressData) => {
   try {
     if (!isCloudReady()) throw new Error('云开发未就绪');
     const { db } = getDb();
-    const openid = await getOpenId();
 
     // 如果设置为默认地址，先取消其他默认地址
+    // PRIVATE 权限下 where 自动限定当前用户
     if (addressData.isDefault) {
       await db
         .collection('addresses')
         .where({
-          _openid: openid,
           isDefault: true,
         })
         .update({
@@ -176,13 +158,11 @@ export const setDefaultAddress = async (id) => {
   try {
     if (!isCloudReady()) throw new Error('云开发未就绪');
     const { db } = getDb();
-    const openid = await getOpenId();
 
-    // 先取消所有默认地址
+    // PRIVATE 权限下 where 自动限定当前用户，取消其他默认地址
     await db
       .collection('addresses')
       .where({
-        _openid: openid,
         isDefault: true,
       })
       .update({

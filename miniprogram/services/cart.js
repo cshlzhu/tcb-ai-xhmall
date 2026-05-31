@@ -1,5 +1,8 @@
 /**
  * 购物车服务
+ *
+ * 使用 CloudBase 数据库 PRIVATE 权限模式，_openid 由系统自动管理，
+ * 无需通过云函数获取 openid。
  */
 
 // 检查云开发是否就绪
@@ -18,6 +21,7 @@ const getDb = () => {
 
 /**
  * 添加商品到购物车
+ * PRIVATE 权限下 _openid 自动管理
  * @param {Object} product - 商品信息
  * @param {Number} count - 商品数量
  * @returns {Promise} - 添加结果
@@ -27,15 +31,8 @@ export const addToCart = async (product, count = 1) => {
     if (!isCloudReady()) throw new Error('云开发未就绪');
     const { db, cartCollection, _ } = getDb();
 
-    // 获取当前用户的openid
-    const { result } = await wx.cloud.callFunction({
-      name: 'getOpenId'
-    });
-    const openid = result.openid;
-
-    // 查询购物车中是否已存在该商品
+    // PRIVATE 权限自动限定当前用户，仅按 productId 查询
     const res = await cartCollection.where({
-      _openid: openid,
       productId: product._id
     }).get();
 
@@ -48,7 +45,7 @@ export const addToCart = async (product, count = 1) => {
         }
       });
     } else {
-      // 商品不存在，添加新记录
+      // 商品不存在，添加新记录（_openid 由系统自动设置）
       return await cartCollection.add({
         data: {
           productId: product._id,
@@ -69,20 +66,17 @@ export const addToCart = async (product, count = 1) => {
 
 /**
  * 获取购物车列表
+ * PRIVATE 权限自动按 _openid 过滤
  * @returns {Promise} - 购物车列表
  */
 export const getCartList = async () => {
   try {
     if (!isCloudReady()) return [];
     const { cartCollection } = getDb();
-    const { result } = await wx.cloud.callFunction({
-      name: 'getOpenId'
-    });
-    const openid = result.openid;
 
-    const res = await cartCollection.where({
-      _openid: openid
-    }).orderBy('createTime', 'desc').get();
+    const res = await cartCollection
+      .orderBy('createTime', 'desc')
+      .get();
 
     return res.data;
   } catch (error) {
