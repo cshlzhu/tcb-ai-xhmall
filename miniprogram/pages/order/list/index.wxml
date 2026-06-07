@@ -48,7 +48,7 @@
           
           <!-- 订单操作按钮 -->
           <view class="order-actions">
-            <block wx:if="{{item.status === 'NOTPAY'}}">
+            <block wx:if="{{item.status === 'NOTPAY' && paymentEnabled}}">
               <button 
                 class="action-btn primary" 
                 size="mini" 

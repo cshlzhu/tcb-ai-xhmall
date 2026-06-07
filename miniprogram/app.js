@@ -20,5 +20,6 @@ App({
   },
 
   globalData: {
+    paymentEnabled: wx.getStorageSync('paymentEnabled') || false,
   }
 }); 

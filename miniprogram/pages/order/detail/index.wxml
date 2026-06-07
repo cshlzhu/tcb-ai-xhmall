@@ -105,7 +105,7 @@
 
   <!-- 底部操作栏 -->
   <view class="footer-actions">
-    <block wx:if="{{order.status === 'NOTPAY'}}">
+    <block wx:if="{{order.status === 'NOTPAY' && paymentEnabled}}">
       <button class="action-btn primary" bindtap="continuePay">继续支付</button>
     </block>
     <block wx:elif="{{order.status === 'SHIPPED'}}">

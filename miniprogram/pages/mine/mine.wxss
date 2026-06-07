@@ -149,6 +149,38 @@
   color: #666;
 }
 
+/* 支付开关卡片 */
+.payment-switch-card {
+  background-color: #ffffff;
+  padding: 24rpx 30rpx;
+  margin: 20rpx 0;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.switch-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.switch-label {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.switch-desc {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+
 /* 功能入口网格样式 */
 .function-grid {
   display: flex;

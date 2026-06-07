@@ -7,6 +7,7 @@ Page({
     orderId: '',
     order: null,
     isLoading: true,
+    paymentEnabled: true,
     statusSteps: []
   },
 
@@ -14,6 +15,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    const app = getApp();
+    this.setData({ paymentEnabled: app.globalData.paymentEnabled });
     if (options.id) {
       this.setData({
         orderId: options.id

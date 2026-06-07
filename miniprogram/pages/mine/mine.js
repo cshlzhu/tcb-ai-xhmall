@@ -10,6 +10,7 @@ Page({
     isLoggedIn: false,
     isLoggingIn: false,
     needNickname: false,
+    paymentEnabled: false,
     orderStats: {
       pendingPayment: 0,
       pendingDelivery: 0,
@@ -19,6 +20,9 @@ Page({
   },
 
   onShow() {
+    const app = getApp();
+    this.setData({ paymentEnabled: app.globalData.paymentEnabled });
+
     const savedInfo = wx.getStorageSync('userInfo') || {};
     const hasRealNickname = savedInfo.nickName && savedInfo.nickName !== '微信用户';
 
@@ -182,6 +186,20 @@ Page({
   },
 
   // ========== 导航 ==========
+
+  // 支付功能开关
+  onPaymentSwitch(e) {
+    const enabled = e.detail.value;
+    const app = getApp();
+    app.globalData.paymentEnabled = enabled;
+    wx.setStorageSync('paymentEnabled', enabled);
+    this.setData({ paymentEnabled: enabled });
+
+    wx.showToast({
+      title: enabled ? '支付功能已开启' : '支付功能已关闭',
+      icon: 'none',
+    });
+  },
 
   navigateToOrderList(e) {
     if (!this.data.isLoggedIn) {

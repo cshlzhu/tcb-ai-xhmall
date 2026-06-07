@@ -155,7 +155,10 @@ Page({
 				count: item.count,
 			}));
 
-			// 调用微信支付云函数
+			const app = getApp();
+			const paymentEnabled = app.globalData.paymentEnabled;
+
+			// 调用云函数创建订单
 			const res = await wx.cloud.callFunction({
 				name: 'wxpayFunctions',
 				data: {
@@ -167,6 +170,7 @@ Page({
 						cartItemIds: this.data.checkoutItems.map((item) => item._id),
 						address: this.data.address,
 						remark: this.data.remark,
+						skipPayment: !paymentEnabled, // 支付关闭时跳过支付
 					},
 				},
 			});
@@ -175,7 +179,23 @@ Page({
 				throw new Error(res.result?.message || '创建订单失败');
 			}
 
-			// 发起支付
+			// 支付关闭时：直接下单成功
+			if (!paymentEnabled) {
+				wx.showToast({
+					title: '下单成功',
+					icon: 'success',
+					success: () => {
+						setTimeout(() => {
+							wx.redirectTo({
+								url: '/pages/order/list/index',
+							});
+						}, 1500);
+					},
+				});
+				return;
+			}
+
+			// 支付开启时：发起微信支付
 			const payment = res.result.paymentParams;
 			await wx.requestPayment({
 				...payment,
@@ -186,7 +206,6 @@ Page({
 						icon: 'success',
 						success: () => {
 							setTimeout(() => {
-								// 跳转到订单列表页
 								wx.redirectTo({
 									url: '/pages/order/list/index',
 								});
@@ -196,7 +215,6 @@ Page({
 				},
 				fail: (err) => {
 					console.error('支付失败', err);
-					// 支付失败后跳转到订单详情页
 					wx.redirectTo({
 						url: `/pages/order/detail/index?id=${res.result.orderId}`,
 					});

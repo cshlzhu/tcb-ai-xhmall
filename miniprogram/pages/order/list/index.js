@@ -8,6 +8,7 @@ Page({
 		isLoading: true,
 		tabs: ['全部', '待付款', '待发货', '待收货', '已完成'],
 		activeTab: 0,
+		paymentEnabled: true,
 		statusMap: {
 			0: '', // 全部
 			1: 'NOTPAY', // 待付款
@@ -21,6 +22,8 @@ Page({
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
+		const app = getApp();
+		this.setData({ paymentEnabled: app.globalData.paymentEnabled });
 		// 如果有传入的tab参数，切换到对应的tab
 		if (options.tab) {
 			const tab = parseInt(options.tab);

@@ -92,6 +92,17 @@
     </view>
   </view>
 
+  <!-- 支付开关 -->
+  <view class="payment-switch-card">
+    <view class="switch-row">
+      <view class="switch-text">
+        <text class="switch-label">支付功能</text>
+        <text class="switch-desc">{{paymentEnabled ? '已开启' : '已关闭（下单直接成功）'}}</text>
+      </view>
+      <switch checked="{{paymentEnabled}}" bindchange="onPaymentSwitch" color="#FF4D4F"/>
+    </view>
+  </view>
+
   <!-- 功能入口网格 -->
   <view class="function-grid">
     <view class="grid-item" bindtap="navigateTo" data-url="/pages/favorite/favorite">

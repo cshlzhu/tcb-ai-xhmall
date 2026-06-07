@@ -19,7 +19,8 @@ exports.main = async (event, context) => {
       description, // 商品描述
       cartItemIds, // 购物车项ID列表
       address, // 收货地址
-      remark // 订单备注
+      remark, // 订单备注
+      skipPayment // 是否跳过支付（直接标记为已支付）
     } = event;
 
     // 生成商户订单号
@@ -30,14 +31,19 @@ exports.main = async (event, context) => {
       outTradeNo, // 商户订单号
       totalAmount, // 订单总金额(分)
       description, // 商品描述
-      status: 'NOTPAY', // 订单状态：未支付
+      status: skipPayment ? 'PAID' : 'NOTPAY', // 跳过支付时直接标记已支付
       items: orderItems, // 订单商品列表
       address, // 收货地址
       remark, // 订单备注
       _openid: wxContext.OPENID, // 用户openid
       createTime: new Date(), // 创建时间
-      updateTime: new Date() // 更新时间
+      updateTime: new Date(), // 更新时间
     };
+
+    // 跳过支付时补充支付时间
+    if (skipPayment) {
+      orderData.payTime = new Date();
+    }
 
     // 开始事务
     const result = await db.runTransaction(async transaction => {
