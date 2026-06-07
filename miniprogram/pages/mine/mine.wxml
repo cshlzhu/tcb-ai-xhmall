@@ -105,6 +105,10 @@
 
   <!-- 功能入口网格 -->
   <view class="function-grid">
+    <view class="grid-item" wx:if="{{isAdmin}}" bindtap="navigateToAdmin">
+      <image class="grid-icon" src="/images/icons/admin.png"></image>
+      <text class="grid-text">管理员</text>
+    </view>
     <view class="grid-item" bindtap="navigateTo" data-url="/pages/favorite/favorite">
       <image class="grid-icon" src="/images/icons/favorite.png"></image>
       <text class="grid-text">我的收藏</text>

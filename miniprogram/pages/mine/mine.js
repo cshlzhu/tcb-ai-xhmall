@@ -10,6 +10,7 @@ Page({
     isLoggedIn: false,
     isLoggingIn: false,
     needNickname: false,
+    isAdmin: false,
     paymentEnabled: false,
     orderStats: {
       pendingPayment: 0,
@@ -29,6 +30,7 @@ Page({
     if (hasRealNickname) {
       this.setData({ userInfo: savedInfo, isLoggedIn: true, isLoggingIn: false, needNickname: false });
       this.loadOrderStats();
+      this.checkAdmin();
     } else if (savedInfo && savedInfo._id) {
       // 有用户记录但昵称无效，显示未登录
       this.setData({ userInfo: savedInfo, isLoggedIn: false, isLoggingIn: false, needNickname: false });
@@ -57,6 +59,7 @@ Page({
           needNickname: false,
         });
         wx.setStorageSync('userInfo', userInfo);
+        if (hasRealNickname) this.checkAdmin();
       } else {
         wx.removeStorageSync('userInfo');
         this.setData({ userInfo: {}, isLoggedIn: false, isLoggingIn: false, needNickname: false });
@@ -75,6 +78,25 @@ Page({
       this.setData({ orderStats: stats });
     } catch (error) {
       console.error('获取订单统计失败:', error);
+    }
+  },
+
+  // 检查当前用户是否为管理员
+  async checkAdmin() {
+    const userInfo = this.data.userInfo || wx.getStorageSync('userInfo') || {};
+    const openid = userInfo._openid;
+    if (!openid) return;
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'wxpayFunctions',
+        data: { type: 'check_admin', data: { openid } }
+      });
+      const isAdmin = (res.result && res.result.isAdmin) || false;
+      this.setData({ isAdmin });
+    } catch (error) {
+      console.error('检查管理员状态失败:', error);
+      this.setData({ isAdmin: false });
     }
   },
 
@@ -170,15 +192,16 @@ Page({
       const updatedInfo = { ...this.data.userInfo, nickName };
       await updateUserInfo(updatedInfo);
       this.setData({
-        'userInfo.nickName': nickName,
-        isLoggedIn: true,
-        isLoggingIn: false,
-        needNickname: false,
-      });
+            'userInfo.nickName': nickName,
+            isLoggedIn: true,
+            isLoggingIn: false,
+            needNickname: false,
+          });
       wx.setStorageSync('userInfo', this.data.userInfo);
 
-      // 登录完成后加载订单统计
+      // 登录完成后加载订单统计并检查管理员
       this.loadOrderStats();
+      this.checkAdmin();
     } catch (error) {
       console.error('保存昵称失败:', error);
       wx.showToast({ title: '保存失败', icon: 'none' });
@@ -208,6 +231,10 @@ Page({
     }
     const type = e.currentTarget.dataset.type;
     wx.navigateTo({ url: `/pages/order/list/index?type=${type}` });
+  },
+
+  navigateToAdmin() {
+    wx.navigateTo({ url: '/pages/admin/orders/index' });
   },
 
   async navigateTo(e) {
@@ -255,6 +282,7 @@ Page({
               isLoggedIn: false,
               isLoggingIn: false,
               needNickname: false,
+              isAdmin: false,
               userInfo: {},
               orderStats: {
                 pendingPayment: 0,

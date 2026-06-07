@@ -9,7 +9,8 @@
     "pages/order/list/index",
     "pages/order/detail/index",
     "pages/address/address",
-    "pages/address/edit/index"
+    "pages/address/edit/index",
+    "pages/admin/orders/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

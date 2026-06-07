@@ -1,0 +1,60 @@
+<!-- pages/admin/orders/index.wxml -->
+<view class="admin-orders">
+  <!-- 标题栏 -->
+  <view class="admin-header">
+    <text class="admin-title">订单管理</text>
+    <text class="admin-subtitle">共 {{orders.length}} 笔已支付订单</text>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-container">
+    <block wx:if="{{!isLoading && orders.length > 0}}">
+      <view class="order-item" wx:for="{{orders}}" wx:key="_id">
+        <view class="order-header">
+          <view class="order-user">
+            <text class="user-label">用户</text>
+            <text class="user-id">{{item._openid}}</text>
+          </view>
+          <text class="order-time">{{item.createTimeFormatted}}</text>
+        </view>
+
+        <view class="order-content" bindtap="viewOrderDetail" data-id="{{item._id}}">
+          <view class="goods-list">
+            <view class="goods-item" wx:for="{{item.items}}" wx:key="id" wx:for-item="goods">
+              <image class="goods-image" src="{{goods.coverUrl || '/images/default-product.png'}}" mode="aspectFill"></image>
+              <view class="goods-info">
+                <view class="goods-name">{{goods.name}}</view>
+                <view class="goods-price">
+                  <text class="price">¥{{goods.price}}</text>
+                  <text class="count">x{{goods.count}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="order-footer">
+          <view class="total-amount">
+            {{item.items.length}}件商品 合计：
+            <text class="amount">¥{{item.totalAmount}}</text>
+          </view>
+          <button
+            class="action-btn primary"
+            size="mini"
+            data-id="{{item._id}}"
+            bindtap="viewOrderDetail"
+          >查看详情</button>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-state" wx:elif="{{!isLoading && orders.length === 0}}">
+      <text class="empty-text">暂无已支付订单</text>
+    </view>
+
+    <view class="loading-state" wx:if="{{isLoading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+</view>
